@@ -1,0 +1,162 @@
+<!DOCTYPE html> 
+<html lang="ja">
+	<head>
+		<meta charset="UTF-8">
+		<title>Divide Calculator</title>	
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.css" />
+		<link rel="stylesheet" href="css/calculator.css" />
+		<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+        <script src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js"></script>
+		<script>
+		var num = 0;
+		var currentCheckbox = '';
+		var conditionNum = 0;
+		var currentCondition = '';
+		var currentResult = '';
+		
+		$(function(){
+				
+				// when calc button is pressed
+				$('#calcBtn').click(function() {
+					// 四捨五入
+					var amt = $('#amount').val();
+					var mem = $('#member').val();
+					var res = amt / mem;
+					$('#result').val(Math.round(res, 0));
+				
+					// page transition
+					$.mobile.changePage('#resultPage', {transition:"flip"});
+				
+					// addList
+					for(i = 0; i < mem; i++){
+						addList(i, res);	
+					}	
+					
+			});
+					
+			// when clear button is pressed
+			$('#clearBtn').click(function(){
+				clear();	
+			})
+			
+			// when back button is pressed
+			$('#backBtn').click(function(){
+				clear();
+			})
+			
+			// when add button is pressed
+			$('#addBtn').click(function(){
+				addCondition();
+			})
+			
+		});
+
+		// Clear all the text field
+		function clear(){
+			$('#amount').val('');
+			$('#member').val('');
+			$('#resultArea').children().remove();
+			$('#additionalCondition').children().remove();
+			str = '';
+			currentResult = '';
+			currentCondition = '';
+		};
+		
+		// List add
+		function addList(num, res){
+			var str = '<fieldset data-role="controlgroup">';
+			str += '<div>';
+			currentResult = currentResult + '<input type="checkbox" name="checkbox-' + num + '" id="checkbox-' + num + '"/><label for="checkbox-' + num + '">' + res + '</label>';
+			str += currentResult ;
+			str += '</div>';
+			str += '</fieldset>';
+			$('#resultArea').children().remove();
+			$('#resultArea').html(str).trigger('create');
+			
+		};
+		
+		// Add the condition
+		function addCondition(){
+			var str = '<div class="ui-grid-a">';
+			str += '<div class="ui-block-a"><label for="amount' + conditionNum + '">Charge' + conditionNum + ':</label><input type="number" name="amount"' + conditionNum + '" id="amount" ' + conditionNum + '"value="" /></dvi></div>';
+			str += '<div class="ui-block-b"><label for="amount' + conditionNum + '">Member' + conditionNum + ':</label><input type="number" name="member"' + conditionNum + '" id="member" ' + conditionNum + '"value="" /></dvi></div>';
+			str += '</div>';
+			currentCondition += str;
+			$('#additionalCondition').children().remove();
+			$('#additionalCondition').html(currentCondition).trigger('create');
+			conditionNum++;
+		}
+		
+		</script>
+
+	</head>
+	
+	<body>
+		
+		<!-- home page -->	
+		<div data-role="page" id="home">
+
+			<!--  header -->
+			<div data-role="header" data-position="fiexd">
+				<h1>Divide Calculator</h1>	
+				<a href= "#home" data-icon="refresh" class="ui-btn-right" id="clearBtn" >Clear</a>
+			</div>	
+
+			<!--  content -->
+			<div data-role="content">
+
+				<div data-role="fieldcontain">
+					<div id="gridArea" class="ui-grid-a">
+						<div class="ui-block-a">
+							<label for="amount">Charge:</label>
+							<input type="number" name="amount" id="amount" value="" />
+						</div>
+						<div class="ui-block-b">
+							<label for="member">Member:</label>
+							<input type="number" name="member" id="member"  value="" />	
+						</div>
+					</div>
+					
+					<div >
+						<input type="button" id="calcBtn" data-inline="true" data-icon="arrow-r"  data-iconpos="right" value="Calc..." />
+						<input type="button" id="addBtn" data-inline="true" data-icon="plus"  data-iconpos="right" value="Add..." />
+					</div>
+
+				</div>
+				
+				<div data-role="fieldcontain" id="additionalCondition">
+				</div>
+					
+			</div><!--  end content -->
+
+			<!--  footer -->
+			<div data-role="footer" data-postion="fixed">
+				<h4></h4>
+			</div>
+	
+		</div>
+
+		<!-- result page -->	
+		<div data-role="page" id="resultPage"  data-title="Divide Calculator (Result)">
+
+			<!--  header -->
+			<div data-role="header" data-position="fiexd">
+				<a href="#home" data-icon="back" id="backBtn"  data-transition="flip">Back</a>
+				<h1>Result</h1>	
+			</div>	
+
+			<!--  content -->
+			<div data-role="content" id="resultArea">
+			</div>
+
+			<!--  footer -->
+			<div data-role="footer" data-postion="fixed">
+				<h4></h4>
+			</div>
+	
+		</div>
+
+	</body>
+
+</html>
