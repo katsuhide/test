@@ -1,5 +1,4 @@
-<!DOCTYPE html> 
-<html lang="ja">
+<!DOCTYPE html> <html lang="ja">
 	<head>
 		<meta charset="UTF-8">
 		<title>Divide Calculator</title>	
@@ -17,22 +16,14 @@
 		
 		$(function(){
 				
-				// when calc button is pressed
-				$('#calcBtn').click(function() {
-					// 四捨五入
-					var amt = $('#amount').val();
-					var mem = $('#member').val();
-					var res = amt / mem;
-					$('#result').val(Math.round(res, 0));
-				
-					// page transition
-					$.mobile.changePage('#resultPage', {transition:"flip"});
-				
-					// addList
-					for(i = 0; i < mem; i++){
-						addList(i, res);	
-					}	
-					
+			// when calc button is pressed
+			$('#calcBtn').click(function() {
+				// calculation	
+				calc();	
+				// page transition
+				$.mobile.changePage('#resultPage', {transition:"flip"});
+				// draw result
+				drawResult();
 			});
 					
 			// when clear button is pressed
@@ -61,26 +52,33 @@
 			str = '';
 			currentResult = '';
 			currentCondition = '';
+			num = 0;
+			conditionNum = 0;
 		};
 		
 		// List add
-		function addList(num, res){
+		function addList(result){
+			var res =  Math.round(result, 0);
+			currentResult = currentResult + '<input type="checkbox" name="checkbox-' + num + '" id="checkbox-' + num + '"/><label for="checkbox-' + num + '">' + res + '</label>';
+			num++;	
+		};
+		
+		// drawResult
+		function drawResult(){
 			var str = '<fieldset data-role="controlgroup">';
 			str += '<div>';
-			currentResult = currentResult + '<input type="checkbox" name="checkbox-' + num + '" id="checkbox-' + num + '"/><label for="checkbox-' + num + '">' + res + '</label>';
 			str += currentResult ;
 			str += '</div>';
 			str += '</fieldset>';
 			$('#resultArea').children().remove();
 			$('#resultArea').html(str).trigger('create');
-			
 		};
 		
 		// Add the condition
 		function addCondition(){
 			var str = '<div class="ui-grid-a">';
-			str += '<div class="ui-block-a"><label for="amount' + conditionNum + '">Charge' + conditionNum + ':</label><input type="number" name="amount"' + conditionNum + '" id="amount" ' + conditionNum + '"value="" /></dvi></div>';
-			str += '<div class="ui-block-b"><label for="amount' + conditionNum + '">Member' + conditionNum + ':</label><input type="number" name="member"' + conditionNum + '" id="member" ' + conditionNum + '"value="" /></dvi></div>';
+			str += '<div class="ui-block-a"><label for="amount' + conditionNum + '">Charge' + conditionNum + ':</label><input type="number" name="amount' + conditionNum + '" id="amount' + conditionNum + '" value="" /></dvi></div>';
+			str += '<div class="ui-block-b"><label for="amount' + conditionNum + '">Member' + conditionNum + ':</label><input type="number" name="member' + conditionNum + '" id="member' + conditionNum + '" value="" /></dvi></div>';
 			str += '</div>';
 			currentCondition += str;
 			$('#additionalCondition').children().remove();
@@ -88,12 +86,38 @@
 			conditionNum++;
 		}
 		
-		</script>
+		// Calculation
+		function calc(){
+			// 追加の計算条件を格納する
+			var  totalAddCharge = 0;
+			var totalAddMem = 0;
+			for(var i = 0; i < conditionNum; i++){
+				var addMem = parseInt($('#member'+i).val());
+				var addCharge = parseInt($('#amount'+i).val());
+				console.log(addMem + ' : ' + addCharge);
+				// 追加条件の結果を格納する
+				for(var j = 0; j < addMem; j++){
+					addList(addCharge);
+				}	
+				// 格納した金額の結果を保持
+				totalAddCharge += addCharge;
+				totalAddMem += addMem
+			}
+			console.log(totalAddMem + ' : ' + totalAddCharge);
+			// 残りの金額を通常条件で分配して格納
+			var balance = parseInt($('#amount').val()) - totalAddCharge;
+			var otherMem = parseInt($('#member').val()) - totalAddMem;
+			var unit = balance / otherMem;
+			for(var i = 0; i < otherMem; i++){
+				addList(unit);	
+			}
 
+		}
+		
+		</script>
 	</head>
 	
 	<body>
-		
 		<!-- home page -->	
 		<div data-role="page" id="home">
 
@@ -158,5 +182,4 @@
 		</div>
 
 	</body>
-
 </html>
