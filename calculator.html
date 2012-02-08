@@ -1,20 +1,31 @@
-<!DOCTYPE html> <html lang="ja">
+<!DOCTYPE html>
+ <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>Divide Calculator</title>	
+		<title>割り勘電卓</title>	
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- 
+		<link rel="stylesheet" href="jquery.mobile/jquery.mobile-1.0.1.min.css" />
+		<script src="jquery/jquery-1.6.4.min.js"></script>
+		<script src="jquery.mobile/jquery.mobile-1.0.1.min.js"></script>
+ -->
 		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.css" />
-		<link rel="stylesheet" href="css/calculator.css" />
 		<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
-        <script src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js"></script>
-		<script>
-		var num = 0;
-		var currentCheckbox = '';
-		var conditionNum = 0;
-		var currentCondition = '';
-		var currentResult = '';
+		<script src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js"></script>
+		
+		<link rel="stylesheet" href="jquery.mobile.actionsheet/jquery.mobile.actionsheet.css">  
+		<script src="jquery.mobile.actionsheet/jquery.mobile.actionsheet.js"></script>
+	<script>
+		var num = 0;	// 結果一覧用のid
+		var currentCondition = '';	// 現在の追加条件を一時的に格納
+		var currentResult = '';		// 現在の結果を一時的に格納
+		var conditionNum = 0;		// 追加条件の数
+		var conditionList = [];		// 追加条件の格納配列
+		var initAmount = 3000;	// 金額欄の初期値
+		var initMem = 3;	// 人数欄の初期値
 		
 		$(function(){
+			clear();	// 初期化
 				
 			// when calc button is pressed
 			$('#calcBtn').click(function() {
@@ -40,6 +51,24 @@
 			$('#addBtn').click(function(){
 				addCondition();
 			})
+
+			// when ok button is pressed
+			$('#okBtn').click(function(){
+				var condition = [];	
+				condition[0] = $('#inputMem').val();	
+				condition[1] = $('#inputCharge').val();	
+				conditionList[conditionNum] = [condition[1], condition[2]];
+				addCondition(condition);	
+				conditionNum++;
+				$('#additionalConditionArea').show();	
+			})
+			
+			// when ok button of input total window is pressed
+			$('#okBtnOfTotal').click(function(){
+				$('#member').val($('#inputTotalMem').val());
+				$('#amount').val($('#inputTotalCharge').val());
+				$('#inputTotalArea').show();	
+			})
 			
 		});
 
@@ -48,17 +77,21 @@
 			$('#amount').val('');
 			$('#member').val('');
 			$('#resultArea').children().remove();
-			$('#additionalCondition').children().remove();
-			str = '';
-			currentResult = '';
-			currentCondition = '';
+			$('#additionalConditionArea').children().remove();
 			num = 0;
-			conditionNum = 0;
+			currentCondition = '';
+			currentResult = '';
+			conditionNum = 0;		// 追加条件の数
+			condition = []; 		// 追加条件
+			conditionList = [];		// 追加条件の格納配列
+			str = '';
+			$('#inputTotalArea').hide();
+			$('#additionalConditionArea').hide();	
 		};
 		
-		// List add
+		// add the result list
 		function addList(result){
-			var res =  Math.round(result, 0);
+			var res =  Math.ceil(result / 100) * 100;
 			currentResult = currentResult + '<input type="checkbox" name="checkbox-' + num + '" id="checkbox-' + num + '"/><label for="checkbox-' + num + '">' + res + '</label>';
 			num++;	
 		};
@@ -75,15 +108,14 @@
 		};
 		
 		// Add the condition
-		function addCondition(){
+		function addCondition(condition){
 			var str = '<div class="ui-grid-a">';
-			str += '<div class="ui-block-a"><label for="amount' + conditionNum + '">Charge' + conditionNum + ':</label><input type="number" name="amount' + conditionNum + '" id="amount' + conditionNum + '" value="" /></dvi></div>';
-			str += '<div class="ui-block-b"><label for="amount' + conditionNum + '">Member' + conditionNum + ':</label><input type="number" name="member' + conditionNum + '" id="member' + conditionNum + '" value="" /></dvi></div>';
+			str += '<div class="ui-block-a"><label for="amount' + conditionNum + '" style="display:inline; vertical-align:baseline;" >金額' + (conditionNum + 1) + ':<input type="number" name="amount' + conditionNum + '" id="amount' + conditionNum + '" value=' + condition[1] + ' style="width:80px; display:inline; vertical-align:baseline;" /></label></dvi></div>';
+			str += '<div class="ui-block-b"><label for="amount' + conditionNum + '" style="display:inline; vertical-align:baseline;" >人数' + (conditionNum + 1) + ':<input type="number" name="member' + conditionNum + '" id="member' + conditionNum + '" value=' + condition[0] + ' style="width:50px; display:inline; vertical-align:baseline;" /></label></dvi></div>';
 			str += '</div>';
 			currentCondition += str;
-			$('#additionalCondition').children().remove();
-			$('#additionalCondition').html(currentCondition).trigger('create');
-			conditionNum++;
+			$('#additionalConditionArea').children().remove();
+			$('#additionalConditionArea').html(currentCondition).trigger('create');
 		}
 		
 		// Calculation
@@ -103,7 +135,6 @@
 				totalAddCharge += addCharge;
 				totalAddMem += addMem
 			}
-			console.log(totalAddMem + ' : ' + totalAddCharge);
 			// 残りの金額を通常条件で分配して格納
 			var balance = parseInt($('#amount').val()) - totalAddCharge;
 			var otherMem = parseInt($('#member').val()) - totalAddMem;
@@ -123,35 +154,52 @@
 
 			<!--  header -->
 			<div data-role="header" data-position="fiexd">
-				<h1>Divide Calculator</h1>	
+				<h1>割り勘電卓</h1>	
 				<a href= "#home" data-icon="refresh" class="ui-btn-right" id="clearBtn" >Clear</a>
 			</div>	
 
 			<!--  content -->
 			<div data-role="content">
 
-				<div data-role="fieldcontain">
-					<div id="gridArea" class="ui-grid-a">
+				<div>
+					<a data-rolE="actionsheet" data-sheet="input-total-form" data-icon="plus" data-iconpos="right" data-inline=“true”>Total</a>	
+					<a data-role="actionsheet" data-sheet="input-form" data-icon="plus" data-iconpos="right" data-inline=“true”>Conditons</a>
+					<input type="button" id="calcBtn" data-inline="true" data-icon="arrow-r"  data-iconpos="right" value="Calculation" />
+				</div><!-- buttone area -->
+				
+				<div id="input-total-form" style="width: 150px;">
+					<form style="padding: 10px; padding-right:20px;">
+						<input type="number" name="inputTotalMem" id="inputTotalMem" value="" placeholder="人数" min="1" />
+						<input type="number" name="inputTotalCharge"  id="inputTotalCharge" value="" placeholder="金額" min="100" step="100" /> 
+						<a href="#" data-theme="b" data-role="button" id="okBtnOfTotal">OK</a> 
+						<a href="#" data-rel="close" data-role="button" id="cancelBtnOfTotal">Cancel</a> 
+					</form> 
+				</div><!--  input total window-->
+				
+				<div id="input-form" style="width: 150px;">
+					<form style="padding: 10px; padding-right:20px;">
+						<input type="number" name="inputMem" id="inputMem" value="" placeholder="人数" min="1" />
+						<input type="number" name="inputCharge" id="inputCharge" value="" placeholder="金額" min="100" step="100" />
+						<a href="#" data-theme="b" data-role="button" id="okBtn">OK</a>
+						<a href="#" data-rel="close" data-role="button" id="cancelBtn">Cancel</a>
+					</form>
+				</div>
+				<!--  add conditions window-->	
+				
+				<div data-role="fieldcontain" id="inputTotalArea" style="display:none">
+					<div class="ui-grid-a">
 						<div class="ui-block-a">
-							<label for="amount">Charge:</label>
-							<input type="number" name="amount" id="amount" value="" />
+							<label for="amount" style="display:inline; vertical-align:baseline;" >合計金額:<input type="number" name="amount" id="amount" value="" placeholder="金額" step="100" min="100" style="width:80px;" /></label>
 						</div>
 						<div class="ui-block-b">
-							<label for="member">Member:</label>
-							<input type="number" name="member" id="member"  value="" />	
-						</div>
+							<label for="member" style="display:inline; vertical-align:baseline;" >総人数:<input type="number" name="member" id="member"  value="" placeholder="人数" step="1" min="1" style="width:50px;" /></label>
+						</div>	
 					</div>
-					
-					<div >
-						<input type="button" id="calcBtn" data-inline="true" data-icon="arrow-r"  data-iconpos="right" value="Calc..." />
-						<input type="button" id="addBtn" data-inline="true" data-icon="plus"  data-iconpos="right" value="Add..." />
-					</div>
-
-				</div>
+				</div><!-- Total Input Form Area -->
 				
-				<div data-role="fieldcontain" id="additionalCondition">
-				</div>
-					
+				<div data-role="" id="additionalConditionArea" styel="display:none">
+				</div><!-- additional condition area -->
+				
 			</div><!--  end content -->
 
 			<!--  footer -->
@@ -180,6 +228,6 @@
 			</div>
 	
 		</div>
-
+		
 	</body>
 </html>
