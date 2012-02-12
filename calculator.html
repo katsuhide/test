@@ -8,14 +8,107 @@
 		<link rel="stylesheet" href="jquery.mobile/jquery.mobile-1.0.1.min.css" />
 		<script src="jquery/jquery-1.6.4.min.js"></script>
 		<script src="jquery.mobile/jquery.mobile-1.0.1.min.js"></script>
+		
+		<link rel="stylesheet" href="jquery.mobile.actionsheet/jquery.mobile.actionsheet.css">  
+		<script src="jquery.mobile.actionsheet/jquery.mobile.actionsheet.js"></script>
+		
+		<link rel="stylesheet" href="https://raw.github.com/katsuhide/jquery.mobile.actionsheet/master/jquery.mobile.actionsheet.css"/>  
+		<script src="https://raw.github.com/katsuhide/jquery.mobile.actionsheet/master/jquery.mobile.actionsheet.js"></script>
  -->
 		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.css" />
 		<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
 		<script src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js"></script>
-		
-		<link rel="stylesheet" href="jquery.mobile.actionsheet/jquery.mobile.actionsheet.css">  
-		<script src="jquery.mobile.actionsheet/jquery.mobile.actionsheet.js"></script>
-	<script>
+		<style type="text/css">
+			.ui-actionsheet-wallpaper { 
+				display: none;
+				background-color: black; 
+				opacity: .3;
+				position: absolute;
+				top:0;
+				left: 0;
+				height: 100%;
+				width: 100%;
+				z-index: 19; /* above content underneath sheet */
+			}
+			.ui-actionsheet-content {
+				-moz-border-radius: 8px;
+				-webkit-border-radius: 8px;
+				border-radius: 8px;
+				background-color: silver;
+				border-style: solid;
+				border-width: 3px;
+				display: none;
+				height: auto;
+				position: absolute;
+				width: 230px;
+				z-index: 20;
+				-moz-box-shadow: 0px 0px 12px rgba(0,0,0,.6);
+				-webkit-box-shadow: 0px 0px 12px rgba(0,0,0,.6);
+				box-shadow: 0px 0px 12px rgba(0,0,0,.6); 
+			}
+			.ui-actionsheet-commandbtn {}
+			.ui-actionsheet-closebtn {
+				color: white;
+				background: #5E6369; /* old browsers */
+				background: -moz-linear-gradient(top, #5E6369 0%, #52575D 1%, #40454E 46%, #141D26 50%, #252F38 98%, #303339 100%); /* firefox */
+				background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#5E6369), color-stop(1%,#52575D), color-stop(46%,#40454E), color-stop(50%,#141D26), color-stop(98%,#252F38), color-stop(100%,#303339)); /* webkit */
+				filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#5E6369', endColorstr='#303339',GradientType=0 ); /* ie */
+				background: -o-linear-gradient(top, #5E6369 0%,#52575D 1%,#40454E 46%,#141D26 50%,#252F38 98%,#303339 100%); /* opera */
+			}
+			@-webkit-keyframes actionsheet-open-fade {
+			  from {
+			    opacity: 0;
+			  }
+			  to {
+			    opacity: 1;
+			  }
+			}
+			@-webkit-keyframes actionsheet-close-fade {
+			  from {
+			    opacity: 1;
+			  }
+			  to {
+			    opacity: 0;
+			  }
+			}
+			@-webkit-keyframes actionsheet-open-slideup {
+			  0% {
+			    -webkit-transform: translateY(1100px);
+			  }
+			  70% {
+			    -webkit-transform: translateY(-20px);
+			  }
+			  100% {
+			    -webkit-transform: translateY(0);
+			  }
+			}
+			@-webkit-keyframes actionsheet-close-slideup {
+			  0% {
+			    -webkit-transform: translateY(0);
+			  }
+			  30% {
+			  	-webkit-transform: translateY(-30px);
+			  }
+			  100% {
+			  	opacity: 0;
+			    -webkit-transform: translateY(300px);
+			  }
+			}
+			.ui-actionsheet-animateIn {
+				-webkit-animation-name: actionsheet-open-slideup;
+				-webkit-animation-delay: 0;
+				-webkit-animation-duration: 500ms;
+			}
+			.ui-actionsheet-animateOut {
+				-webkit-animation-name: actionsheet-close-slideup;
+				-webkit-animation-delay: 0;
+				-webkit-animation-duration: 500ms;
+			}	
+		</style>
+		<link rel="stylesheet" type="text/css" href="https://raw.github.com/katsuhide/jquery.mobile.actionsheet/master/jquery.mobile.actionsheet.css"/>  
+		<script src="https://raw.github.com/katsuhide/jquery.mobile.actionsheet/master/jquery.mobile.actionsheet.js"></script>
+	
+	<script>	
 		var num = 0;	// 結果一覧用のid
 		var currentCondition = '';	// 現在の追加条件を一時的に格納
 		var currentResult = '';		// 現在の結果を一時的に格納
@@ -162,9 +255,9 @@
 			<div data-role="content">
 
 				<div>
-					<a data-rolE="actionsheet" data-sheet="input-total-form" data-icon="plus" data-iconpos="right" data-inline=“true”>Total</a>	
-					<a data-role="actionsheet" data-sheet="input-form" data-icon="plus" data-iconpos="right" data-inline=“true”>Conditons</a>
-					<input type="button" id="calcBtn" data-inline="true" data-icon="arrow-r"  data-iconpos="right" value="Calculation" />
+					<a data-role="actionsheet" data-sheet="input-total-form" data-icon="plus" data-iconpos="right" >Total</a>	
+					<a data-role="actionsheet" data-sheet="input-form" data-icon="plus" data-iconpos="right" >Conditons</a>
+					<input type="button" id="calcBtn" data-icon="arrow-r"  data-iconpos="right" value="Calculation" />
 				</div><!-- buttone area -->
 				
 				<div id="input-total-form" style="width: 150px;">
