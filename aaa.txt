@@ -1,7 +1,1 @@
-hogehoge
-
-* fuga
-* fuga
-* hoge
-* fuga
-
+This is test.
