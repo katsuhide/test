@@ -8,4 +8,3 @@ aaa
 commit on feature_2
 hoge
 fuga
-
