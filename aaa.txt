@@ -1,4 +1,10 @@
 This is test.
 comomit#1 by 2018/2/5 .
 comomit#3 by 2018/2/5 .
+comomit#6-2 by 2018/2/5 .
 
+commit on feature_2
+aaa
+commit on feature_2
+hoge
+fuga
