@@ -1,9 +1,10 @@
-PR test.
+マージテスト
+===
 
-test commit #2 by 2018/2/5.
 
 ## feature/test1
 1. first commit
 
 ## feature/test2
+
 
