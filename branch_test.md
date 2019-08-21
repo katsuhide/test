@@ -1,3 +1,1 @@
-* test
-* test
-* test
+* commit on feature/branchA
